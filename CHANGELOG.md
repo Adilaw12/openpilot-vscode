@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0] — 2026-06-12
+
+### Added
+- **Tab autocomplete** — free inline ghost-text code completions, powered by Ollama, Claude, or OpenAI
+- **Ollama onboarding** — on first run, prompts to install Ollama or pick a different AI backend if it isn't running
+
+### Fixed
+- Agent tool-calling loop (`executeToolCall` was missing) — codebase read/write/search/run-command/git actions now work, with approval gating and path-traversal protection
+- Removed duplicate extension name shown in the chat webview header
+
+### Security
+- Backend: restrict CORS to known origins, validate license key format, strengthen Stripe webhook handling
+
 ## [0.2.1] — 2026-06-12
 
 ### Changed

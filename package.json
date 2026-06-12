@@ -2,7 +2,7 @@
   "name": "freebird-ai",
   "displayName": "Freebird AI",
   "description": "Free, open-source AI coding assistant. Reads your codebase, edits files, and pushes to GitHub — powered by Ollama (free/local), Claude, or OpenAI. Fly free from Copilot.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "publisher": "TenLabs",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -17,13 +17,31 @@
   "engines": {
     "vscode": "^1.90.0"
   },
-  "categories": ["AI", "Chat", "Programming Languages", "Other"],
-  "keywords": ["ai", "copilot", "ollama", "claude", "openai", "free", "chatbot", "coding assistant", "cursor", "agent"],
+  "categories": [
+    "AI",
+    "Chat",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "ai",
+    "copilot",
+    "ollama",
+    "claude",
+    "openai",
+    "free",
+    "chatbot",
+    "coding assistant",
+    "cursor",
+    "agent"
+  ],
   "galleryBanner": {
     "color": "#1e1e2e",
     "theme": "dark"
   },
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -79,7 +97,11 @@
       "properties": {
         "freebird.backend": {
           "type": "string",
-          "enum": ["ollama", "anthropic", "openai"],
+          "enum": [
+            "ollama",
+            "anthropic",
+            "openai"
+          ],
           "enumDescriptions": [
             "Local AI via Ollama — completely free, runs on your machine",
             "Anthropic Claude API — pay-as-you-go, very cheap",
