@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AIProvider, Message } from './provider';
+import { AIProvider, CompletionOptions, Message } from './provider';
 
 export class AnthropicProvider implements AIProvider {
     private get apiKey() {
@@ -10,7 +10,7 @@ export class AnthropicProvider implements AIProvider {
         return vscode.workspace.getConfiguration('freebird').get<string>('model') || 'claude-haiku-4-5-20251001';
     }
 
-    async stream(messages: Message[], onChunk: (text: string) => void): Promise<void> {
+    async stream(messages: Message[], onChunk: (text: string) => void, opts?: CompletionOptions): Promise<void> {
         if (!this.apiKey) {
             throw new Error('No Anthropic API key set. Go to Settings → Freebird → API Key.');
         }
@@ -24,9 +24,10 @@ export class AnthropicProvider implements AIProvider {
             },
             body: JSON.stringify({
                 model: this.model,
-                max_tokens: 4096,
+                max_tokens: opts?.maxTokens ?? 4096,
                 stream: true,
-                messages
+                messages,
+                ...(opts?.temperature !== undefined && { temperature: opts.temperature })
             })
         });
 
@@ -55,9 +56,9 @@ export class AnthropicProvider implements AIProvider {
         }
     }
 
-    async complete(messages: Message[]): Promise<string> {
+    async complete(messages: Message[], opts?: CompletionOptions): Promise<string> {
         let result = '';
-        await this.stream(messages, chunk => { result += chunk; });
+        await this.stream(messages, chunk => { result += chunk; }, opts);
         return result;
     }
 }

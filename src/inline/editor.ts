@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getProvider } from '../ai';
 import { getLicenseStatus, UPGRADE_URL } from '../license/validator';
+import { stripFences } from '../util/text';
 
 export function registerInlineEdit(context: vscode.ExtensionContext) {
     // Register the internal command (no Pro check — called only after gate passes)
@@ -85,9 +86,4 @@ Return ONLY the rewritten code — no explanation, no markdown fences, no preamb
             });
         }
     );
-}
-
-function stripFences(text: string): string {
-    const match = text.trim().match(/^```[\w]*\n?([\s\S]*?)\n?```$/);
-    return match ? match[1] : text;
 }

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AIProvider, Message } from './provider';
+import { AIProvider, CompletionOptions, Message } from './provider';
 
 export class OpenAIProvider implements AIProvider {
     private get apiKey() {
@@ -10,7 +10,7 @@ export class OpenAIProvider implements AIProvider {
         return vscode.workspace.getConfiguration('freebird').get<string>('model') || 'gpt-4o-mini';
     }
 
-    async stream(messages: Message[], onChunk: (text: string) => void): Promise<void> {
+    async stream(messages: Message[], onChunk: (text: string) => void, opts?: CompletionOptions): Promise<void> {
         if (!this.apiKey) {
             throw new Error('No OpenAI API key set. Go to Settings → Freebird → API Key.');
         }
@@ -24,7 +24,9 @@ export class OpenAIProvider implements AIProvider {
             body: JSON.stringify({
                 model: this.model,
                 stream: true,
-                messages: [{ role: 'system', content: 'You are Freebird, a free AI coding assistant for VS Code.' }, ...messages]
+                messages: [{ role: 'system', content: 'You are Freebird, a free AI coding assistant for VS Code.' }, ...messages],
+                ...(opts?.maxTokens !== undefined && { max_tokens: opts.maxTokens }),
+                ...(opts?.temperature !== undefined && { temperature: opts.temperature })
             })
         });
 
@@ -52,9 +54,9 @@ export class OpenAIProvider implements AIProvider {
         }
     }
 
-    async complete(messages: Message[]): Promise<string> {
+    async complete(messages: Message[], opts?: CompletionOptions): Promise<string> {
         let result = '';
-        await this.stream(messages, chunk => { result += chunk; });
+        await this.stream(messages, chunk => { result += chunk; }, opts);
         return result;
     }
 }

@@ -3,7 +3,12 @@ export interface Message {
     content: string;
 }
 
+export interface CompletionOptions {
+    maxTokens?: number;
+    temperature?: number;
+}
+
 export interface AIProvider {
-    stream(messages: Message[], onChunk: (text: string) => void): Promise<void>;
-    complete(messages: Message[]): Promise<string>;
+    stream(messages: Message[], onChunk: (text: string) => void, opts?: CompletionOptions): Promise<void>;
+    complete(messages: Message[], opts?: CompletionOptions): Promise<string>;
 }

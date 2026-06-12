@@ -13,4 +13,4 @@ export function getProvider(): AIProvider {
     }
 }
 
-export type { AIProvider, Message } from './provider';
+export type { AIProvider, Message, CompletionOptions } from './provider';

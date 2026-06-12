@@ -2,17 +2,21 @@ import * as vscode from 'vscode';
 import { ChatPanel } from './chat/panel';
 import { GitService } from './git/service';
 import { registerInlineEdit } from './inline/editor';
+import { registerTabCompletion } from './inline/completionProvider';
 import { getLicenseStatus, warmLicenseCache, activateLicense, clearLicenseCache, UPGRADE_URL } from './license/validator';
 import { initWorkspaceTreeCache } from './agent/tools';
+import { checkOllamaSetup } from './ai/ollamaSetup';
 
 export function activate(context: vscode.ExtensionContext) {
     const git = new GitService();
 
     registerInlineEdit(context);
+    registerTabCompletion(context);
 
     // Warm caches immediately in the background — no blocking at startup
     warmLicenseCache(context);
     initWorkspaceTreeCache(context);
+    checkOllamaSetup(context).catch(() => {});
 
     // ── Status bar ──────────────────────────────────────────────────────────
     const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);

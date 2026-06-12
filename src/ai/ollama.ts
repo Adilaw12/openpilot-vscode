@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AIProvider, Message } from './provider';
+import { AIProvider, CompletionOptions, Message } from './provider';
 
 export class OllamaProvider implements AIProvider {
     private get url() {
@@ -10,11 +10,21 @@ export class OllamaProvider implements AIProvider {
         return vscode.workspace.getConfiguration('freebird').get<string>('model') || 'qwen2.5-coder';
     }
 
-    async stream(messages: Message[], onChunk: (text: string) => void): Promise<void> {
+    async stream(messages: Message[], onChunk: (text: string) => void, opts?: CompletionOptions): Promise<void> {
         const response = await fetch(`${this.url}/api/chat`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: this.model, messages, stream: true })
+            body: JSON.stringify({
+                model: this.model,
+                messages,
+                stream: true,
+                ...(opts && {
+                    options: {
+                        ...(opts.maxTokens !== undefined && { num_predict: opts.maxTokens }),
+                        ...(opts.temperature !== undefined && { temperature: opts.temperature })
+                    }
+                })
+            })
         });
 
         if (!response.ok) {
@@ -36,9 +46,9 @@ export class OllamaProvider implements AIProvider {
         }
     }
 
-    async complete(messages: Message[]): Promise<string> {
+    async complete(messages: Message[], opts?: CompletionOptions): Promise<string> {
         let result = '';
-        await this.stream(messages, chunk => { result += chunk; });
+        await this.stream(messages, chunk => { result += chunk; }, opts);
         return result;
     }
 }

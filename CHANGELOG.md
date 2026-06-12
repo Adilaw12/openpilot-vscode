@@ -3,7 +3,7 @@
 ## [0.2.1] — 2026-06-12
 
 ### Changed
-- **Renamed to Freebird AI** — new name, same product, zero conflicts. Continues from `TenLabs.openpilot-ai` v0.2.1, the final release under the OpenPilot AI name.
+- **Renamed to Freebird AI** — new name, same product, zero conflicts
 - All commands, settings, and extension IDs updated to `freebird.*`
 - License key format updated to `FB-XXXX-XXXX-XXXX-XXXX`
 
@@ -44,20 +44,3 @@
 - AI commit message generation
 - Git push and status support
 - Ollama, Anthropic Claude, and OpenAI backends
-
----
-
-## Earlier history (as OpenPilot AI)
-
-### [0.2.1] — OpenPilot AI
-- Final release under the OpenPilot AI name — development continued as Freebird AI (`TenLabs.freebird-ai`)
-
-### [0.1.0] — 2025
-- Standalone chat panel — no GitHub Copilot required
-- Agentic codebase tools: read files, search code, write and edit files
-- Multi-step agent loop: AI reads your codebase then makes targeted edits
-- Approval flow for all write/edit/run/push operations
-- Inline code editing with `Ctrl+Alt+K`
-- AI commit message generation (`/commit`)
-- Git push support (`/push`, `/status`)
-- Supports Ollama (free/local), Anthropic Claude, and OpenAI backends

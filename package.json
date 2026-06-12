@@ -23,7 +23,7 @@
     "color": "#1e1e2e",
     "theme": "dark"
   },
-  "activationEvents": [],
+  "activationEvents": ["onStartupFinished"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -107,6 +107,16 @@
           "type": "string",
           "default": "",
           "markdownDescription": "Freebird Pro license key (format: `FB-XXXX-XXXX-XXXX-XXXX`). Get one at [freebird.tenlabs.io/upgrade](https://freebird.tenlabs.io/upgrade)."
+        },
+        "freebird.tabCompletion.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show inline AI code completions (ghost text) as you type."
+        },
+        "freebird.tabCompletion.delay": {
+          "type": "number",
+          "default": 350,
+          "description": "Milliseconds to wait after typing stops before requesting a completion."
         }
       }
     }

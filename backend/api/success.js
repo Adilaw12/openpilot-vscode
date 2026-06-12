@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).send(page(
-        '🚀 Welcome to OpenPilot Pro!',
+        '🚀 Welcome to Freebird Pro!',
         `<p style="margin-bottom:12px">Your license key:</p>
          <div class="key-box" id="key">${key}</div>
          <button onclick="navigator.clipboard.writeText('${key}').then(function(){ this.textContent='Copied!'; }.bind(this))">
@@ -33,7 +33,7 @@ export default async function handler(req, res) {
          <ol>
            <li>Open VS Code</li>
            <li>Press <kbd>Ctrl+Shift+P</kbd> (or <kbd>Cmd+Shift+P</kbd> on Mac)</li>
-           <li>Run <strong>OpenPilot: Activate Pro License</strong></li>
+           <li>Run <strong>Freebird: Activate Pro License</strong></li>
            <li>Paste the key above</li>
          </ol>
          <p style="margin-top:16px;opacity:0.7">
@@ -49,7 +49,7 @@ function page(title, body) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} — OpenPilot</title>
+<title>${title} — Freebird AI</title>
 <style>
   * { box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

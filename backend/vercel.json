@@ -3,6 +3,7 @@
     "api/*.js": { "maxDuration": 10 }
   },
   "rewrites": [
+    { "source": "/success", "destination": "/api/success" },
     { "source": "/upgrade", "destination": "/api/upgrade-page" }
   ]
 }
