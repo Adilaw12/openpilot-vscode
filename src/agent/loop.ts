@@ -28,7 +28,7 @@ export async function runAgentLoop(opts: AgentRunOptions): Promise<Message[]> {
     const workspaceTree = await getWorkspaceTree();
 
     let systemContent =
-        `You are OpenPilot, a free open-source AI coding assistant for VS Code. ` +
+        `You are Freebird, a free open-source AI coding assistant for VS Code. ` +
         `Help with writing, debugging, explaining, and improving code. ` +
         `Use markdown with language-tagged code blocks.` +
         TOOL_SYSTEM_PROMPT;

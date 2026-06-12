@@ -16,18 +16,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     // ── Status bar ──────────────────────────────────────────────────────────
     const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    statusBar.command = 'openpilot.openChat';
-    statusBar.text = '$(send) OpenPilot AI';
-    statusBar.tooltip = 'OpenPilot AI — click to open chat';
+    statusBar.command = 'freebird.openChat';
+    statusBar.text = '$(send) Freebird AI';
+    statusBar.tooltip = 'Freebird AI — click to open chat';
     statusBar.show();
     context.subscriptions.push(statusBar);
 
     async function refreshStatusBar() {
         const s = await getLicenseStatus(context);
-        statusBar.text = s.isPro ? '$(send) OpenPilot AI Pro' : '$(send) OpenPilot AI';
+        statusBar.text = s.isPro ? '$(send) Freebird AI Pro' : '$(send) Freebird AI';
         statusBar.tooltip = s.isPro
-            ? `OpenPilot AI Pro — ${s.email ?? 'active'}`
-            : 'OpenPilot AI Free — click to open chat';
+            ? `Freebird AI Pro — ${s.email ?? 'active'}`
+            : 'Freebird AI Free — click to open chat';
         if (ChatPanel.current) ChatPanel.current.showLicenseStatus();
     }
     refreshStatusBar();
@@ -38,12 +38,12 @@ export function activate(context: vscode.ExtensionContext) {
         if (s.isPro) return true;
 
         const action = await vscode.window.showWarningMessage(
-            `"${featureName}" is an OpenPilot AI Pro feature.`,
+            `"${featureName}" is an Freebird AI Pro feature.`,
             'Upgrade to Pro',
             'Activate License'
         );
         if (action === 'Upgrade to Pro') vscode.env.openExternal(vscode.Uri.parse(UPGRADE_URL));
-        if (action === 'Activate License') vscode.commands.executeCommand('openpilot.activateLicense');
+        if (action === 'Activate License') vscode.commands.executeCommand('freebird.activateLicense');
         return false;
     }
 
@@ -51,27 +51,27 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
 
         // FREE — chat is available to everyone
-        vscode.commands.registerCommand('openpilot.openChat', () => {
+        vscode.commands.registerCommand('freebird.openChat', () => {
             ChatPanel.open(context, git);
         }),
 
         // PRO — AI commit requires active subscription
-        vscode.commands.registerCommand('openpilot.aiCommit', async () => {
+        vscode.commands.registerCommand('freebird.aiCommit', async () => {
             if (!await requirePro('AI Commit')) return;
             ChatPanel.open(context, git, 'commit');
         }),
 
         // PRO — inline edit requires active subscription
-        vscode.commands.registerCommand('openpilot.inlineEdit', async () => {
+        vscode.commands.registerCommand('freebird.inlineEdit', async () => {
             if (!await requirePro('Inline Edit')) return;
-            vscode.commands.executeCommand('openpilot._inlineEditInternal');
+            vscode.commands.executeCommand('freebird._inlineEditInternal');
         }),
 
-        vscode.commands.registerCommand('openpilot.activateLicense', async () => {
+        vscode.commands.registerCommand('freebird.activateLicense', async () => {
             const key = await vscode.window.showInputBox({
-                prompt: 'Enter your OpenPilot AI Pro license key',
-                placeHolder: 'OP-XXXX-XXXX-XXXX-XXXX',
-                title: 'Activate OpenPilot AI Pro',
+                prompt: 'Enter your Freebird AI Pro license key',
+                placeHolder: 'FB-XXXX-XXXX-XXXX-XXXX',
+                title: 'Activate Freebird AI Pro',
                 validateInput: v => v && v.trim().length > 5 ? null : 'Please enter a valid license key'
             });
             if (!key) return;
@@ -82,7 +82,7 @@ export function activate(context: vscode.ExtensionContext) {
                     const status = await activateLicense(context, key);
                     if (status.isPro) {
                         vscode.window.showInformationMessage(
-                            `OpenPilot AI Pro activated${status.email ? ` for ${status.email}` : ''}. Enjoy unlimited access!`
+                            `Freebird AI Pro activated${status.email ? ` for ${status.email}` : ''}. Enjoy unlimited access!`
                         );
                         refreshStatusBar();
                     } else {
@@ -91,28 +91,28 @@ export function activate(context: vscode.ExtensionContext) {
                             'Buy Pro', 'Try Again'
                         );
                         if (action === 'Buy Pro') vscode.env.openExternal(vscode.Uri.parse(UPGRADE_URL));
-                        if (action === 'Try Again') vscode.commands.executeCommand('openpilot.activateLicense');
+                        if (action === 'Try Again') vscode.commands.executeCommand('freebird.activateLicense');
                     }
                 }
             );
         }),
 
-        vscode.commands.registerCommand('openpilot.upgradeToPro', () => {
+        vscode.commands.registerCommand('freebird.upgradeToPro', () => {
             vscode.env.openExternal(vscode.Uri.parse(UPGRADE_URL));
         }),
 
-        vscode.commands.registerCommand('openpilot.configure', async () => {
+        vscode.commands.registerCommand('freebird.configure', async () => {
             const backend = await vscode.window.showQuickPick(
                 [
                     { label: '$(server) Ollama (local — free)', value: 'ollama',    description: 'Runs on your machine, no API key needed' },
                     { label: '$(cloud) Anthropic Claude',       value: 'anthropic', description: 'Pay-as-you-go, ~$0.001 per message' },
                     { label: '$(cloud) OpenAI',                 value: 'openai',    description: 'Pay-as-you-go, GPT-4o-mini' }
                 ],
-                { placeHolder: 'Select AI backend', title: 'OpenPilot AI: Configure AI Backend' }
+                { placeHolder: 'Select AI backend', title: 'Freebird AI: Configure AI Backend' }
             );
             if (!backend) return;
 
-            await vscode.workspace.getConfiguration('openpilot').update('backend', backend.value, true);
+            await vscode.workspace.getConfiguration('freebird').update('backend', backend.value, true);
 
             if (backend.value !== 'ollama') {
                 const key = await vscode.window.showInputBox({
@@ -120,10 +120,10 @@ export function activate(context: vscode.ExtensionContext) {
                     password: true,
                     placeHolder: 'sk-...'
                 });
-                if (key) await vscode.workspace.getConfiguration('openpilot').update('apiKey', key, true);
+                if (key) await vscode.workspace.getConfiguration('freebird').update('apiKey', key, true);
             }
 
-            vscode.window.showInformationMessage(`OpenPilot AI configured to use ${backend.label}`);
+            vscode.window.showInformationMessage(`Freebird AI configured to use ${backend.label}`);
             clearLicenseCache(context);
             refreshStatusBar();
         })

@@ -1,18 +1,18 @@
 {
-  "name": "openpilot-ai",
-  "displayName": "OpenPilot AI",
-  "description": "Free, open-source AI coding assistant. Reads your codebase, edits files, and pushes to GitHub — powered by Ollama (free/local), Claude, or OpenAI. No Copilot required.",
+  "name": "freebird-ai",
+  "displayName": "Freebird AI",
+  "description": "Free, open-source AI coding assistant. Reads your codebase, edits files, and pushes to GitHub — powered by Ollama (free/local), Claude, or OpenAI. Fly free from Copilot.",
   "version": "0.2.1",
   "publisher": "TenLabs",
   "license": "MIT",
   "icon": "media/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Adilaw12/openpilot-vscode"
+    "url": "https://github.com/Adilaw12/freebird-vscode"
   },
-  "homepage": "https://github.com/Adilaw12/openpilot-vscode#readme",
+  "homepage": "https://github.com/Adilaw12/freebird-vscode#readme",
   "bugs": {
-    "url": "https://github.com/Adilaw12/openpilot-vscode/issues"
+    "url": "https://github.com/Adilaw12/freebird-vscode/issues"
   },
   "engines": {
     "vscode": "^1.90.0"
@@ -28,38 +28,38 @@
   "contributes": {
     "commands": [
       {
-        "command": "openpilot.openChat",
-        "title": "OpenPilot: Open Chat"
+        "command": "freebird.openChat",
+        "title": "Freebird: Open Chat"
       },
       {
-        "command": "openpilot.aiCommit",
-        "title": "OpenPilot: AI Commit"
+        "command": "freebird.aiCommit",
+        "title": "Freebird: AI Commit"
       },
       {
-        "command": "openpilot.configure",
-        "title": "OpenPilot: Configure AI Backend"
+        "command": "freebird.configure",
+        "title": "Freebird: Configure AI Backend"
       },
       {
-        "command": "openpilot.inlineEdit",
-        "title": "OpenPilot: Edit with AI"
+        "command": "freebird.inlineEdit",
+        "title": "Freebird: Edit with AI"
       },
       {
-        "command": "openpilot.activateLicense",
-        "title": "OpenPilot: Activate Pro License"
+        "command": "freebird.activateLicense",
+        "title": "Freebird: Activate Pro License"
       },
       {
-        "command": "openpilot.upgradeToPro",
-        "title": "OpenPilot: Upgrade to Pro"
+        "command": "freebird.upgradeToPro",
+        "title": "Freebird: Upgrade to Pro"
       }
     ],
     "keybindings": [
       {
-        "command": "openpilot.openChat",
+        "command": "freebird.openChat",
         "key": "ctrl+alt+o",
         "mac": "cmd+alt+o"
       },
       {
-        "command": "openpilot.inlineEdit",
+        "command": "freebird.inlineEdit",
         "key": "ctrl+alt+k",
         "mac": "cmd+alt+k",
         "when": "editorTextFocus && editorHasSelection"
@@ -68,16 +68,16 @@
     "menus": {
       "editor/context": [
         {
-          "command": "openpilot.inlineEdit",
+          "command": "freebird.inlineEdit",
           "when": "editorHasSelection",
           "group": "1_modification@1"
         }
       ]
     },
     "configuration": {
-      "title": "OpenPilot",
+      "title": "Freebird",
       "properties": {
-        "openpilot.backend": {
+        "freebird.backend": {
           "type": "string",
           "enum": ["ollama", "anthropic", "openai"],
           "enumDescriptions": [
@@ -86,27 +86,27 @@
             "OpenAI API — pay-as-you-go"
           ],
           "default": "ollama",
-          "description": "AI backend to use for OpenPilot"
+          "description": "AI backend to use for Freebird"
         },
-        "openpilot.apiKey": {
+        "freebird.apiKey": {
           "type": "string",
           "default": "",
           "markdownDescription": "API key for cloud AI backends (Anthropic or OpenAI). Leave blank if using Ollama."
         },
-        "openpilot.model": {
+        "freebird.model": {
           "type": "string",
           "default": "",
           "markdownDescription": "Model override. Leave blank for the recommended default per backend:\n- Ollama: `qwen2.5-coder`\n- Anthropic: `claude-haiku-4-5`\n- OpenAI: `gpt-4o-mini`"
         },
-        "openpilot.ollamaUrl": {
+        "freebird.ollamaUrl": {
           "type": "string",
           "default": "http://localhost:11434",
           "description": "Ollama server URL (only needed if Ollama runs on a non-default port)"
         },
-        "openpilot.licenseKey": {
+        "freebird.licenseKey": {
           "type": "string",
           "default": "",
-          "markdownDescription": "OpenPilot Pro license key (format: `OP-XXXX-XXXX-XXXX-XXXX`). Get one at [openpilot.tenlabs.io/upgrade](https://openpilot.tenlabs.io/upgrade)."
+          "markdownDescription": "Freebird Pro license key (format: `FB-XXXX-XXXX-XXXX-XXXX`). Get one at [freebird.tenlabs.io/upgrade](https://freebird.tenlabs.io/upgrade)."
         }
       }
     }

@@ -5,7 +5,7 @@ import { AnthropicProvider } from './anthropic';
 import { OpenAIProvider } from './openai';
 
 export function getProvider(): AIProvider {
-    const backend = vscode.workspace.getConfiguration('openpilot').get<string>('backend', 'ollama');
+    const backend = vscode.workspace.getConfiguration('freebird').get<string>('backend', 'ollama');
     switch (backend) {
         case 'anthropic': return new AnthropicProvider();
         case 'openai': return new OpenAIProvider();

@@ -3,16 +3,16 @@ import { AIProvider, Message } from './provider';
 
 export class AnthropicProvider implements AIProvider {
     private get apiKey() {
-        return vscode.workspace.getConfiguration('openpilot').get<string>('apiKey', '');
+        return vscode.workspace.getConfiguration('freebird').get<string>('apiKey', '');
     }
 
     private get model() {
-        return vscode.workspace.getConfiguration('openpilot').get<string>('model') || 'claude-haiku-4-5-20251001';
+        return vscode.workspace.getConfiguration('freebird').get<string>('model') || 'claude-haiku-4-5-20251001';
     }
 
     async stream(messages: Message[], onChunk: (text: string) => void): Promise<void> {
         if (!this.apiKey) {
-            throw new Error('No Anthropic API key set. Go to Settings → OpenPilot → API Key.');
+            throw new Error('No Anthropic API key set. Go to Settings → Freebird → API Key.');
         }
 
         const response = await fetch('https://api.anthropic.com/v1/messages', {

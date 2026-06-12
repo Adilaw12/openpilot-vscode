@@ -220,7 +220,7 @@ export async function executeToolCall(
             const id = `cmd-${Date.now()}`;
             const ok = await onApprovalNeeded(id, 'Run command', tool.command as string);
             if (!ok) return { success: false, output: 'Rejected by user.' };
-            const terminal = vscode.window.activeTerminal ?? vscode.window.createTerminal('OpenPilot');
+            const terminal = vscode.window.activeTerminal ?? vscode.window.createTerminal('Freebird');
             terminal.show(true);
             terminal.sendText(tool.command as string);
             return { success: true, output: `Sent to terminal: ${tool.command}` };

@@ -18,17 +18,17 @@ const FREE_SYSTEM: Message[] = [
     {
         role: 'user',
         content:
-            'You are OpenPilot, a free open-source AI coding assistant for VS Code. ' +
+            'You are Freebird, a free open-source AI coding assistant for VS Code. ' +
             'Help with writing, debugging, explaining, and improving code. ' +
             'Use markdown with language-tagged code blocks. Be concise but thorough.\n\n' +
             'IMPORTANT: You are running in free mode and cannot access files or run commands. ' +
             'When the user asks you to read files, edit across multiple files, search the codebase, ' +
-            'or run terminal commands, explain that OpenPilot Pro enables these capabilities. ' +
+            'or run terminal commands, explain that Freebird Pro enables these capabilities. ' +
             'In the meantime, ask them to paste the relevant code directly into the chat.'
     },
     {
         role: 'assistant',
-        content: 'Ready. I am OpenPilot — ask me anything about your code.'
+        content: 'Ready. I am Freebird — ask me anything about your code.'
     }
 ];
 
@@ -54,8 +54,8 @@ export class ChatPanel {
     private constructor(context: vscode.ExtensionContext, git: GitService, initialCommand?: string) {
         this.context = context;
         this.panel = vscode.window.createWebviewPanel(
-            'openpilot.chat',
-            'OpenPilot',
+            'freebird.chat',
+            'Freebird',
             vscode.ViewColumn.Beside,
             { enableScripts: true, retainContextWhenHidden: true }
         );
@@ -89,7 +89,7 @@ export class ChatPanel {
                     vscode.env.openExternal(vscode.Uri.parse(UPGRADE_URL));
                     break;
                 case 'activate-license':
-                    vscode.commands.executeCommand('openpilot.activateLicense');
+                    vscode.commands.executeCommand('freebird.activateLicense');
                     break;
             }
         }, null, this.disposables);
@@ -200,7 +200,7 @@ export class ChatPanel {
             this.post({ type: 'assistant-start' });
             this.post({
                 type: 'set-text',
-                text: `**Error:** ${err.message}\n\nRun \`OpenPilot: Configure AI Backend\` to check your settings.`
+                text: `**Error:** ${err.message}\n\nRun \`Freebird: Configure AI Backend\` to check your settings.`
             });
         }
         this.post({ type: 'assistant-end' });
@@ -255,7 +255,7 @@ export class ChatPanel {
                 this.post({ type: 'set-text', text: response });
             });
         } catch (err: any) {
-            response = `**Error:** ${err.message}\n\nRun \`OpenPilot: Configure AI Backend\` to check your settings.`;
+            response = `**Error:** ${err.message}\n\nRun \`Freebird: Configure AI Backend\` to check your settings.`;
             this.post({ type: 'set-text', text: response });
         }
 

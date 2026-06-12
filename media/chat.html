@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenPilot AI</title>
+<title>Freebird AI</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -344,7 +344,7 @@ em { font-style: italic; }
       <polygon points="14,18 38,26 14,34 20,26" fill="currentColor" opacity="0.9"/>
       <polygon points="22,22 38,26 22,30 26,26" fill="currentColor" opacity="0.45"/>
     </svg>
-    <span id="wordmark">OpenPilot AI</span>
+    <span id="wordmark">Freebird AI</span>
     <span id="pro-badge">PRO</span>
   </div>
   <div id="top-bar-right">
@@ -376,7 +376,7 @@ em { font-style: italic; }
       <polygon points="11,17 42,26 11,35 18,26" fill="currentColor" opacity="0.88"/>
       <polygon points="20,22 42,26 20,30 25,26" fill="currentColor" opacity="0.35"/>
     </svg>
-    <div class="welcome-title">OpenPilot AI</div>
+    <div class="welcome-title">Freebird AI</div>
     <div class="welcome-sub">AI coding assistant for VS Code</div>
     <div class="welcome-grid">
       <div class="welcome-card">
@@ -511,7 +511,7 @@ function addUserMsg(text) {
 function startAssistantMsg() {
   removeWelcome();
   var div=document.createElement('div'); div.className='msg assistant';
-  var lbl=document.createElement('span'); lbl.className='label'; lbl.textContent='OpenPilot AI';
+  var lbl=document.createElement('span'); lbl.className='label'; lbl.textContent='Freebird AI';
   var bbl=document.createElement('div'); bbl.className='bubble typing';
   bbl.innerHTML='<span class="spinning" style="display:inline-block;width:12px;height:12px;margin-right:6px"><svg viewBox="0 0 12 12" style="width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round"><path d="M6 1v3M6 8v3M1 6h3M8 6h3"/></svg></span>Thinking…';
   div.appendChild(lbl); div.appendChild(bbl); msgsEl.appendChild(div); scroll();

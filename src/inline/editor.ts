@@ -5,7 +5,7 @@ import { getLicenseStatus, UPGRADE_URL } from '../license/validator';
 export function registerInlineEdit(context: vscode.ExtensionContext) {
     // Register the internal command (no Pro check — called only after gate passes)
     context.subscriptions.push(
-        vscode.commands.registerCommand('openpilot._inlineEditInternal', inlineEdit)
+        vscode.commands.registerCommand('freebird._inlineEditInternal', inlineEdit)
     );
 }
 
@@ -17,7 +17,7 @@ async function inlineEdit() {
     const selectedText = editor.document.getText(selection);
 
     if (!selectedText.trim()) {
-        vscode.window.showWarningMessage('Select some code first, then use OpenPilot: Edit with AI.');
+        vscode.window.showWarningMessage('Select some code first, then use Freebird: Edit with AI.');
         return;
     }
 
@@ -33,16 +33,16 @@ async function inlineEdit() {
     const afterContext  = editor.document.getText(afterRange);
 
     const instruction = await vscode.window.showInputBox({
-        prompt: 'What should OpenPilot do with this code?',
+        prompt: 'What should Freebird do with this code?',
         placeHolder: 'e.g. "add error handling", "convert to async/await", "add TypeScript types"',
-        title: 'OpenPilot: Inline Edit'
+        title: 'Freebird: Inline Edit'
     });
     if (!instruction) return;
 
     const provider = getProvider();
 
     await vscode.window.withProgress(
-        { location: vscode.ProgressLocation.Notification, title: 'OpenPilot: Rewriting…', cancellable: true },
+        { location: vscode.ProgressLocation.Notification, title: 'Freebird: Rewriting…', cancellable: true },
         async (_progress, token) => {
             const prompt = `You are editing code in \`${fileName}\` (${lang}).
 
@@ -67,7 +67,7 @@ Return ONLY the rewritten code — no explanation, no markdown fences, no preamb
                     if (!token.isCancellationRequested) result += chunk;
                 });
             } catch (err: any) {
-                vscode.window.showErrorMessage(`OpenPilot: ${err.message}`);
+                vscode.window.showErrorMessage(`Freebird: ${err.message}`);
                 return;
             }
 
@@ -78,10 +78,10 @@ Return ONLY the rewritten code — no explanation, no markdown fences, no preamb
             await editor.edit(builder => builder.replace(selection, result));
 
             vscode.window.showInformationMessage(
-                `OpenPilot applied: "${instruction}"`, 'Undo', 'Open Chat'
+                `Freebird applied: "${instruction}"`, 'Undo', 'Open Chat'
             ).then(choice => {
                 if (choice === 'Undo') vscode.commands.executeCommand('undo');
-                if (choice === 'Open Chat') vscode.commands.executeCommand('openpilot.openChat');
+                if (choice === 'Open Chat') vscode.commands.executeCommand('freebird.openChat');
             });
         }
     );

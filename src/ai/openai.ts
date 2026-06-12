@@ -3,16 +3,16 @@ import { AIProvider, Message } from './provider';
 
 export class OpenAIProvider implements AIProvider {
     private get apiKey() {
-        return vscode.workspace.getConfiguration('openpilot').get<string>('apiKey', '');
+        return vscode.workspace.getConfiguration('freebird').get<string>('apiKey', '');
     }
 
     private get model() {
-        return vscode.workspace.getConfiguration('openpilot').get<string>('model') || 'gpt-4o-mini';
+        return vscode.workspace.getConfiguration('freebird').get<string>('model') || 'gpt-4o-mini';
     }
 
     async stream(messages: Message[], onChunk: (text: string) => void): Promise<void> {
         if (!this.apiKey) {
-            throw new Error('No OpenAI API key set. Go to Settings → OpenPilot → API Key.');
+            throw new Error('No OpenAI API key set. Go to Settings → Freebird → API Key.');
         }
 
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -24,7 +24,7 @@ export class OpenAIProvider implements AIProvider {
             body: JSON.stringify({
                 model: this.model,
                 stream: true,
-                messages: [{ role: 'system', content: 'You are OpenPilot, a free AI coding assistant for VS Code.' }, ...messages]
+                messages: [{ role: 'system', content: 'You are Freebird, a free AI coding assistant for VS Code.' }, ...messages]
             })
         });
 

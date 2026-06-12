@@ -3,11 +3,11 @@ import { AIProvider, Message } from './provider';
 
 export class OllamaProvider implements AIProvider {
     private get url() {
-        return vscode.workspace.getConfiguration('openpilot').get<string>('ollamaUrl', 'http://localhost:11434');
+        return vscode.workspace.getConfiguration('freebird').get<string>('ollamaUrl', 'http://localhost:11434');
     }
 
     private get model() {
-        return vscode.workspace.getConfiguration('openpilot').get<string>('model') || 'qwen2.5-coder';
+        return vscode.workspace.getConfiguration('freebird').get<string>('model') || 'qwen2.5-coder';
     }
 
     async stream(messages: Message[], onChunk: (text: string) => void): Promise<void> {

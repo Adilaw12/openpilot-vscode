@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export const API_BASE    = 'https://openpilot-backend.vercel.app';
+export const API_BASE    = 'https://freebird-backend.vercel.app';
 export const UPGRADE_URL = 'https://buy.stripe.com/4gMeVf1K51ZA2604KxfAc02';
 
 const CACHE_TTL_MS   = 60 * 60 * 1000;          // 1 hour
@@ -25,7 +25,7 @@ let _memCache: { status: LicenseStatus; ts: number; key: string } | null = null;
 
 export async function getLicenseStatus(context: vscode.ExtensionContext): Promise<LicenseStatus> {
     const key = vscode.workspace
-        .getConfiguration('openpilot')
+        .getConfiguration('freebird')
         .get<string>('licenseKey', '')
         .trim()
         .toUpperCase();
@@ -102,7 +102,7 @@ export async function activateLicense(
     key: string
 ): Promise<LicenseStatus> {
     const normalised = key.trim().toUpperCase();
-    await vscode.workspace.getConfiguration('openpilot').update('licenseKey', normalised, true);
+    await vscode.workspace.getConfiguration('freebird').update('licenseKey', normalised, true);
     await context.globalState.update('licenseCache', undefined);
     _memCache = null; // clear in-memory cache too
     return getLicenseStatus(context);
