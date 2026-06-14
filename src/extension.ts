@@ -5,6 +5,7 @@ import { registerInlineEdit } from './inline/editor';
 import { registerTabCompletion } from './inline/completionProvider';
 import { getLicenseStatus, warmLicenseCache, activateLicense, clearLicenseCache, UPGRADE_URL } from './license/validator';
 import { initWorkspaceTreeCache } from './agent/tools';
+import { previewHtmlFile } from './agent/preview';
 import { checkOllamaSetup } from './ai/ollamaSetup';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -103,6 +104,15 @@ export function activate(context: vscode.ExtensionContext) {
 
         vscode.commands.registerCommand('freebird.upgradeToPro', () => {
             vscode.env.openExternal(vscode.Uri.parse(UPGRADE_URL));
+        }),
+
+        vscode.commands.registerCommand('freebird.previewHtml', (uri?: vscode.Uri) => {
+            const target = uri ?? vscode.window.activeTextEditor?.document.uri;
+            if (!target) {
+                vscode.window.showWarningMessage('Open an HTML file to preview it.');
+                return;
+            }
+            previewHtmlFile(target.fsPath);
         }),
 
         vscode.commands.registerCommand('freebird.configure', async () => {

@@ -7,6 +7,7 @@ import { Message } from '../ai/provider';
 import { runAgentLoop, AgentEvent, stripToolBlocks } from '../agent/loop';
 import { buildFileContext, resolveMentions, listWorkspaceFiles } from './contextBuilder';
 import { getLicenseStatus, UPGRADE_URL } from '../license/validator';
+import { getAgentTrialRemaining, consumeAgentTrial, AGENT_TRIAL_LIMIT } from '../license/usage';
 import { readProjectMemory, clearProjectMemory, MEMORY_RELATIVE_PATH } from '../agent/memory';
 
 // Keep history to this many message pairs before trimming oldest turns
@@ -166,31 +167,39 @@ export class ChatPanel {
         if (trimmed === '/help') {
             this.post({ type: 'user', text: '/help' });
             this.post({ type: 'assistant-start' });
-            this.post({
-                type: 'set-text',
-                text: [
-                    '**Available commands:**',
-                    '',
-                    '`/commit` — AI-generate a git commit message',
-                    '`/push` — push current branch to remote',
-                    '`/status` — show git status',
-                    '`/memory` — show what Freebird remembers about this project',
-                    '`/forget` — clear project memory',
-                    '`/clear` — clear conversation history',
-                    '`/help` — show this message',
-                    '',
-                    '**@ mentions:**',
-                    'Type `@filename` to inject a file into your message.',
-                    'Example: `explain the logic in @src/utils/parser.ts`',
-                    '',
-                    '**Keyboard shortcuts:**',
-                    '`Ctrl+Alt+O` — open chat',
-                    '`Ctrl+Alt+K` — inline edit selected code (Pro)',
-                    '',
-                    '**Need help?**',
-                    'Billing or technical issues: [support@ten-labs.com.au](mailto:support@ten-labs.com.au)',
-                ].join('\n')
-            });
+            const license = await getLicenseStatus(this.context);
+            const helpLines = [
+                '**Available commands:**',
+                '',
+                '`/commit` — AI-generate a git commit message',
+                '`/push` — push current branch to remote',
+                '`/status` — show git status',
+                '`/memory` — show what Freebird remembers about this project',
+                '`/forget` — clear project memory',
+                '`/clear` — clear conversation history',
+                '`/help` — show this message',
+                '',
+                '**@ mentions:**',
+                'Type `@filename` to inject a file into your message.',
+                'Example: `explain the logic in @src/utils/parser.ts`',
+                '',
+                '**Keyboard shortcuts:**',
+                '`Ctrl+Alt+O` — open chat',
+                '`Ctrl+Alt+K` — inline edit selected code (Pro)',
+                '',
+            ];
+            if (!license.isPro) {
+                helpLines.push(
+                    '**Free plan:**',
+                    `${getAgentTrialRemaining(this.context)}/${AGENT_TRIAL_LIMIT} full codebase-aware agent runs left this month — [Upgrade to Pro](${UPGRADE_URL}) for unlimited.`,
+                    ''
+                );
+            }
+            helpLines.push(
+                '**Need help?**',
+                'Billing or technical issues: [support@ten-labs.com.au](mailto:support@ten-labs.com.au)',
+            );
+            this.post({ type: 'set-text', text: helpLines.join('\n') });
             this.post({ type: 'assistant-end' });
             return;
         }
@@ -204,6 +213,10 @@ export class ChatPanel {
 
         if (license.isPro) {
             await this.runProChat(cleanText, mentionContext, git);
+        } else if (getAgentTrialRemaining(this.context) > 0) {
+            await this.runProChat(cleanText, mentionContext, git);
+            const remaining = await consumeAgentTrial(this.context);
+            this.post({ type: 'trial-used', remaining });
         } else {
             await this.runFreeChat(cleanText, mentionContext);
         }

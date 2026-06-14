@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { exec, ExecException } from 'child_process';
 import { GitService } from '../git/service';
+import { previewHtmlFile } from './preview';
 
 export interface ToolCall {
     action: string;
@@ -27,6 +28,7 @@ AVAILABLE TOOLS:
 - search_code {"action":"search_code","query":"myFunc","filePattern":"*.ts"}                     grep across files
 - write_file  {"action":"write_file","path":"src/new.ts","content":"..."}                        create / overwrite
 - edit_file   {"action":"edit_file","path":"src/x.ts","oldStr":"exact","newStr":"replacement"}   targeted edit
+- preview_html {"action":"preview_html","path":"index.html"}                                     open a live preview tab
 - run_command {"action":"run_command","command":"npm test"}                                       run in terminal
 - git_status  {"action":"git_status"}                                                            repo status
 - git_push    {"action":"git_push"}                                                              push to remote
@@ -35,9 +37,11 @@ GUIDELINES:
 - For tasks that need multiple steps or touch several files, start your reply with a short plan — a numbered list of 2-5 steps — before making any tool calls, so the user knows what you're about to do. Skip the plan for simple one-step requests (answering a question, reading or editing a single file).
 - Always read files before editing — never assume their contents
 - Use edit_file for targeted changes; write_file only for new files or complete rewrites
-- edit_file requires oldStr to match the file exactly (whitespace, indentation and all)
+- edit_file matches oldStr exactly when possible; if that fails it falls back to a whitespace-insensitive line match, so minor spacing differences are OK — but still copy oldStr from the file as closely as you can
+- After creating or editing an HTML file, call preview_html on it so the user can see the rendered page in a tab inside VS Code — don't tell them to install a separate live-server extension
 - All paths are relative to the workspace root
 - When the user asks you to build, create, make, scaffold, or set up something (e.g. "make a website", "create a script that..."), use write_file to create the actual files in their workspace — don't just print example code in chat. Only show inline snippets when they ask for an explanation, example, or something not meant to be saved.
+- When creating a website, write every file the HTML references (e.g. style.css, script.js, image placeholders) — never leave a <link> or <script> pointing at a file you didn't create
 - To remember things across sessions (project conventions, architecture decisions, user preferences, in-progress work), write short bullet notes to .freebird/memory.md using write_file or edit_file. It's automatically loaded into your context next time — keep it concise and up to date, don't let it grow unbounded.
 - After all changes are done, write a short summary of what you did
 `;
@@ -142,6 +146,7 @@ export async function executeToolCall(
             case 'search_code': return await searchCodeTool(tool);
             case 'write_file':  return await writeFileTool(tool, onApprovalNeeded);
             case 'edit_file':   return await editFileTool(tool, onApprovalNeeded);
+            case 'preview_html': return await previewHtmlTool(tool);
             case 'run_command': return await runCommandTool(tool, onApprovalNeeded);
             case 'git_status':  return { success: true, output: await git.getStatus() };
             case 'git_push':    return await gitPushTool(git, onApprovalNeeded);
@@ -220,6 +225,37 @@ async function writeFileTool(tool: ToolCall, onApprovalNeeded: ApprovalFn): Prom
     return { success: true, output: `Wrote ${relPath} (${content.length} bytes).` };
 }
 
+// Collapses leading/trailing whitespace and internal runs of whitespace so lines that
+// differ only in indentation or spacing still compare equal.
+function normalizeLine(line: string): string {
+    return line.trim().replace(/\s+/g, ' ');
+}
+
+// Falls back to a whitespace-insensitive, line-by-line match when an exact substring
+// match isn't found — handles re-indentation or spacing drift in the model's oldStr.
+function findFuzzyMatch(content: string, oldStr: string): { start: number; end: number } | null {
+    const oldLines = oldStr.split('\n');
+    const normalizedOld = oldLines.map(normalizeLine);
+    if (normalizedOld.every(l => l === '')) return null;
+
+    const contentLines = content.split('\n');
+    for (let i = 0; i <= contentLines.length - oldLines.length; i++) {
+        let matched = true;
+        for (let j = 0; j < oldLines.length; j++) {
+            if (normalizeLine(contentLines[i + j]) !== normalizedOld[j]) {
+                matched = false;
+                break;
+            }
+        }
+        if (matched) {
+            const start = contentLines.slice(0, i).join('\n').length + (i === 0 ? 0 : 1);
+            const matchedText = contentLines.slice(i, i + oldLines.length).join('\n');
+            return { start, end: start + matchedText.length };
+        }
+    }
+    return null;
+}
+
 async function editFileTool(tool: ToolCall, onApprovalNeeded: ApprovalFn): Promise<ToolResult> {
     const relPath = String(tool.path ?? '');
     const oldStr  = String(tool.oldStr ?? '');
@@ -228,22 +264,44 @@ async function editFileTool(tool: ToolCall, onApprovalNeeded: ApprovalFn): Promi
 
     const full = resolveWorkspacePath(relPath);
     const content = fs.readFileSync(full, 'utf8');
-    const idx = content.indexOf(oldStr);
-    if (idx === -1) {
-        return { success: false, output: `oldStr not found in ${relPath}. Read the file first and copy the text to match exactly.` };
+
+    let start = content.indexOf(oldStr);
+    let end = start === -1 ? -1 : start + oldStr.length;
+
+    if (start === -1) {
+        const fuzzy = findFuzzyMatch(content, oldStr);
+        if (!fuzzy) {
+            return { success: false, output: `oldStr not found in ${relPath}. Read the file first and copy the text to match exactly.` };
+        }
+        start = fuzzy.start;
+        end = fuzzy.end;
     }
 
-    const updated = content.slice(0, idx) + newStr + content.slice(idx + oldStr.length);
+    const matchedText = content.slice(start, end);
+    const updated = content.slice(0, start) + newStr + content.slice(end);
 
     const approved = await onApprovalNeeded(
         approvalId('edit_file'),
         `Edit ${relPath}`,
-        truncate(`- ${oldStr}\n+ ${newStr}`, 2000)
+        truncate(`- ${matchedText}\n+ ${newStr}`, 2000)
     );
     if (!approved) return { success: false, output: 'User rejected this change.' };
 
     fs.writeFileSync(full, updated, 'utf8');
     return { success: true, output: `Edited ${relPath}.` };
+}
+
+async function previewHtmlTool(tool: ToolCall): Promise<ToolResult> {
+    const relPath = String(tool.path ?? '');
+    if (!relPath) return { success: false, output: 'preview_html requires "path".' };
+
+    const full = resolveWorkspacePath(relPath);
+    if (!fs.existsSync(full)) {
+        return { success: false, output: `${relPath} does not exist.` };
+    }
+
+    previewHtmlFile(full);
+    return { success: true, output: `Opened a live preview of ${relPath}. It refreshes automatically when files are saved.` };
 }
 
 async function runCommandTool(tool: ToolCall, onApprovalNeeded: ApprovalFn): Promise<ToolResult> {

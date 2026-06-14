@@ -580,6 +580,17 @@ function showUpgradeHint() {
   msgsEl.appendChild(h); scroll();
 }
 
+function showTrialUsedHint(remaining) {
+  var h=document.createElement('div'); h.className='upgrade-hint';
+  var msg = remaining > 0
+    ? 'That used one of your free codebase-aware runs — <b>'+remaining+'</b> left this month.'
+    : 'That was your last free codebase-aware run this month.';
+  h.innerHTML = msg + ' &nbsp;' +
+    '<button onclick="vscode.postMessage({type:\'upgrade\'})">Upgrade to Pro — $6/mo</button>' +
+    ' &nbsp;or&nbsp; <button onclick="vscode.postMessage({type:\'activate-license\'})">Enter license key</button>';
+  msgsEl.appendChild(h); scroll();
+}
+
 // ── Autocomplete ──────────────────────────────────────────────────────────────
 function showAC(items, mode, sectionLabel) {
   acItems=items; acIndex=-1; acMode=mode;
@@ -685,6 +696,7 @@ window.addEventListener('message',function(e){
     case 'approval-request': addApprovalCard(m.id,m.description,m.preview); break;
     case 'assistant-end':    endMsg(); break;
     case 'show-upgrade-hint':showUpgradeHint(); break;
+    case 'trial-used':       showTrialUsedHint(m.remaining); break;
     case 'cleared':          msgsEl.innerHTML=''; addDivider('conversation cleared'); break;
     case 'workspace-files':  workspaceFiles=m.files||[]; break;
     case 'license-status': {

@@ -1,6 +1,14 @@
-# Freebird AI — Free AI Coding Assistant for VS Code
+# Freebird AI — Open-Source AI Coding Assistant for VS Code
 
-> Fly free from Copilot. Open-source AI coding assistant that reads your entire codebase, edits files, and pushes to GitHub — powered by Ollama (free/local), Claude, or OpenAI.
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/TenLabs.freebird-ai?style=flat-square&label=VS%20Marketplace&color=0066B8)](https://marketplace.visualstudio.com/items?itemName=TenLabs.freebird-ai)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/TenLabs.freebird-ai?style=flat-square&color=success)](https://marketplace.visualstudio.com/items?itemName=TenLabs.freebird-ai)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/TenLabs.freebird-ai?style=flat-square&color=yellow)](https://marketplace.visualstudio.com/items?itemName=TenLabs.freebird-ai&ssr=false#review-details)
+[![License](https://img.shields.io/github/license/Adilaw12/freebird-vscode?style=flat-square)](https://github.com/Adilaw12/freebird-vscode/blob/main/LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/Adilaw12/freebird-vscode?style=flat-square)](https://github.com/Adilaw12/freebird-vscode)
+
+> The affordable, open-source alternative to Copilot. Reads your entire codebase, edits files, and pushes to GitHub — powered by Ollama (free/local), Claude, or OpenAI.
+
+![Freebird AI — codebase-aware agent with inline edit](media/banner.svg)
 
 ---
 
@@ -20,13 +28,17 @@
 | **Approve / reject before any change** | — | ✅ |
 | **Project memory across sessions** | — | ✅ |
 
+**Try before you buy:** free users get **5 full codebase-aware agent runs per month** (indexing, multi-file edits, inline edit) — no card required.
+
 **[Upgrade to Pro — $6/month](https://buy.stripe.com/4gMeVf1K51ZA2604KxfAc02)**
 
 ---
 
 ## Features
 
-### Free as a Bird — No Copilot Required
+![Freebird AI feature highlights](media/feature-grid.svg)
+
+### Bring Your Own AI — No Copilot Required
 Works with **Ollama** (local, totally free), **Anthropic Claude** (pay-as-you-go), or **OpenAI**. Bring your own API key. No GitHub Copilot subscription needed.
 
 ### Understands Your Whole Codebase (Pro)

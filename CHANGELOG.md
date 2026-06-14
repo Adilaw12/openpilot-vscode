@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.3] — 2026-06-14
+
+### Added
+- **Live HTML preview** — the agent can open a rendered preview tab for any HTML file it creates or edits (`preview_html`), no Live Server extension required. Preview auto-refreshes on save. Also available via right-click → "Freebird: Preview HTML" on any HTML file.
+- **Free trial for the agent** — free users get 5 full codebase-aware agent runs per month (indexing, multi-file edits, inline edit) before falling back to plain chat. Remaining count shown via `/help` and after each trial run.
+
+### Improved
+- `edit_file` now falls back to a whitespace-insensitive line match when an exact `oldStr` match isn't found, making edits more reliable
+- When building a website, the agent now writes every file the HTML references (CSS, JS, etc.) instead of leaving dangling `<link>`/`<script>` references
+
+### Changed
+- README refresh: marketplace badges, clearer "affordable open-source Copilot alternative" positioning, optimized keyword list for search discovery, and new SVG hero banner + feature-highlight graphics (`media/banner.svg`, `media/feature-grid.svg`)
+
 ## [0.4.2] — 2026-06-13
 
 ### Improved

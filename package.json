@@ -1,8 +1,8 @@
 {
   "name": "freebird-ai",
   "displayName": "Freebird AI",
-  "description": "Free, open-source AI coding assistant. Reads your codebase, edits files, and pushes to GitHub — powered by Ollama (free/local), Claude, or OpenAI. Fly free from Copilot.",
-  "version": "0.4.2",
+  "description": "The affordable, open-source alternative to GitHub Copilot. Reads your codebase, edits files, and pushes to GitHub — powered by Ollama (free/local), Claude, or OpenAI.",
+  "version": "0.4.3",
   "publisher": "TenLabs",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -27,10 +27,12 @@
   "keywords": [
     "ai",
     "copilot",
-    "ollama",
+    "autocomplete",
+    "inline edit",
+    "llm",
     "claude",
     "openai",
-    "free",
+    "ollama",
     "chatbot",
     "coding assistant",
     "cursor",
@@ -69,6 +71,10 @@
       {
         "command": "freebird.upgradeToPro",
         "title": "Freebird: Upgrade to Pro"
+      },
+      {
+        "command": "freebird.previewHtml",
+        "title": "Freebird: Preview HTML"
       }
     ],
     "keybindings": [
@@ -90,6 +96,11 @@
           "command": "freebird.inlineEdit",
           "when": "editorHasSelection",
           "group": "1_modification@1"
+        },
+        {
+          "command": "freebird.previewHtml",
+          "when": "resourceLangId == html",
+          "group": "navigation"
         }
       ]
     },
